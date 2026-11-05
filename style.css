@@ -1,10 +1,61 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ---------- Theme tokens ---------- */
+:root {
+  /* Light (default) */
+  --text: #1c1c1e;
+  --glass: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --line: rgba(0, 0, 0, 0.1);
+  --control: rgba(255, 255, 255, 0.6);
+  --shadow: rgba(31, 38, 135, 0.12);
+  --base: #a8d8ff;
+  --blob-1: rgba(255, 190, 140, 0.75);
+  --blob-2: rgba(130, 200, 255, 0.8);
+  --blob-3: rgba(200, 170, 255, 0.7);
+  --grad: linear-gradient(160deg, #cfe9ff, #f3e1ff);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --text: #fff;
+  --glass: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --line: rgba(255, 255, 255, 0.15);
+  --control: rgba(255, 255, 255, 0.15);
+  --shadow: rgba(0, 0, 0, 0.35);
+  --base: #0b1026;
+  --blob-1: rgba(255, 120, 90, 0.35);
+  --blob-2: rgba(60, 130, 255, 0.45);
+  --blob-3: rgba(140, 80, 255, 0.45);
+  --grad: linear-gradient(160deg, #0f1c3d, #1b1035);
+  color-scheme: dark;
+}
+
+/* System: follow the OS when no explicit theme is chosen */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --text: #fff;
+    --glass: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --line: rgba(255, 255, 255, 0.15);
+    --control: rgba(255, 255, 255, 0.15);
+    --shadow: rgba(0, 0, 0, 0.35);
+    --base: #0b1026;
+    --blob-1: rgba(255, 120, 90, 0.35);
+    --blob-2: rgba(60, 130, 255, 0.45);
+    --blob-3: rgba(140, 80, 255, 0.45);
+    --grad: linear-gradient(160deg, #0f1c3d, #1b1035);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Base ---------- */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #fff;
+  color: var(--text);
   min-height: 100vh;
-  background: #1e3c72;
+  background: var(--base);
 }
 
 .bg {
@@ -12,10 +63,10 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(circle at 20% 20%, rgba(255, 170, 120, 0.55), transparent 45%),
-    radial-gradient(circle at 80% 30%, rgba(120, 200, 255, 0.6), transparent 50%),
-    radial-gradient(circle at 50% 90%, rgba(150, 110, 255, 0.55), transparent 50%),
-    linear-gradient(160deg, #2b5876, #4e4376);
+    radial-gradient(circle at 20% 20%, var(--blob-1), transparent 45%),
+    radial-gradient(circle at 80% 30%, var(--blob-2), transparent 50%),
+    radial-gradient(circle at 50% 90%, var(--blob-3), transparent 50%),
+    var(--grad);
 }
 
 .app {
@@ -28,12 +79,12 @@ body {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
   border-radius: 22px;
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 32px var(--shadow);
   padding: 16px 18px;
 }
 
@@ -45,24 +96,41 @@ h2 {
   opacity: 0.7;
   padding-bottom: 10px;
   margin-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid var(--line);
 }
 
-/* Search */
+/* ---------- Top bar: greeting + theme switch ---------- */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.greeting { font-size: 22px; font-weight: 600; }
+
+.theme-switch { display: flex; padding: 3px; border-radius: 12px; gap: 2px; }
+.theme-switch button {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.theme-switch button[aria-pressed="true"] { background: var(--control); opacity: 1; font-weight: 600; }
+
+/* ---------- Search ---------- */
 .search { display: flex; padding: 6px 6px 6px 16px; border-radius: 14px; }
 .search input {
   flex: 1;
   background: none;
   border: none;
   outline: none;
-  color: #fff;
+  color: var(--text);
   font-size: 16px;
 }
-.search input::placeholder { color: rgba(255, 255, 255, 0.65); }
+.search input::placeholder { color: var(--text); opacity: 0.55; }
 .search button {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--control);
   border: none;
-  color: #fff;
+  color: var(--text);
   font-size: 20px;
   width: 38px;
   height: 38px;
@@ -70,20 +138,20 @@ h2 {
   cursor: pointer;
 }
 
-/* Current */
+/* ---------- Current ---------- */
 .current { text-align: center; padding: 28px 18px; }
 .current h1 { font-size: 30px; font-weight: 500; }
 .temp { font-size: 96px; font-weight: 200; line-height: 1.05; }
 .condition { font-size: 20px; opacity: 0.9; }
 .hilo { margin-top: 4px; font-size: 17px; opacity: 0.85; }
 
-/* Hourly */
+/* ---------- Hourly ---------- */
 .hourly { display: flex; gap: 22px; overflow-x: auto; scrollbar-width: none; }
 .hourly::-webkit-scrollbar { display: none; }
 .hour { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 44px; font-size: 15px; }
 .hour .icon { font-size: 24px; }
 
-/* Daily */
+/* ---------- Daily ---------- */
 .daily { list-style: none; }
 .daily li {
   display: grid;
@@ -91,17 +159,17 @@ h2 {
   align-items: center;
   padding: 10px 0;
   font-size: 17px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid var(--line);
 }
 .daily li:last-child { border-bottom: none; }
 .daily .icon { font-size: 22px; }
 .range { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
-.range .lo { opacity: 0.65; width: 34px; text-align: right; }
+.range .lo { opacity: 0.6; width: 34px; text-align: right; }
 .range .hi { width: 34px; }
-.bar { flex: 1; max-width: 120px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.25); position: relative; }
-.bar span { position: absolute; top: 0; bottom: 0; border-radius: 2px; background: linear-gradient(90deg, #8fd3f4, #ffd36e, #ff9a5a); }
+.bar { flex: 1; max-width: 120px; height: 4px; border-radius: 2px; background: var(--line); position: relative; }
+.bar span { position: absolute; top: 0; bottom: 0; border-radius: 2px; background: linear-gradient(90deg, #5ab8e8, #f5c242, #ff8a4a); }
 
-/* Detail tiles */
+/* ---------- Detail tiles ---------- */
 .details { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .tile p { font-size: 30px; font-weight: 400; }
 

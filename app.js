@@ -81,4 +81,28 @@ $("search").addEventListener("submit", async (e) => {
   }
 });
 
+// ---------- Greeting ----------
+const USER_NAME = "Rowan";
+const hr = new Date().getHours();
+const part = hr < 12 ? "Good morning" : hr < 18 ? "Good afternoon" : "Good evening";
+$("greeting").textContent = `${part}, ${USER_NAME}`;
+
+// ---------- Theme: light / dark / system ----------
+function applyTheme(choice) {
+  const root = document.documentElement;
+  if (choice === "light" || choice === "dark") root.dataset.theme = choice;
+  else delete root.dataset.theme; // system: CSS follows prefers-color-scheme
+  document.querySelectorAll("[data-theme-choice]").forEach((b) =>
+    b.setAttribute("aria-pressed", b.dataset.themeChoice === choice)
+  );
+  try { localStorage.setItem("theme", choice); } catch {}
+}
+
+let savedTheme = "system";
+try { savedTheme = localStorage.getItem("theme") || "system"; } catch {}
+applyTheme(savedTheme);
+document.querySelectorAll("[data-theme-choice]").forEach((b) =>
+  b.addEventListener("click", () => applyTheme(b.dataset.themeChoice))
+);
+
 loadWeather(DEFAULT);
